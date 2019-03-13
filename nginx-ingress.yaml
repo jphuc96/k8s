@@ -1,0 +1,65 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: www.sudojoss.com
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: sudojoss
+            servicePort: 8081
+        - path: /aria2
+          backend:
+            serviceName: aria2
+            servicePort: 80
+
+  - host: blog.sudojoss.com
+    http:
+      paths:
+        - backend:
+            serviceName: ghost
+            servicePort: 2368
+
+  - host: prometheus.sudojoss.com
+    http:
+      paths:
+        - backend:
+            serviceName: prometheus-server
+            servicePort: 80
+
+  - host: grafana.sudojoss.com
+    http:
+      paths:
+        - backend:
+            serviceName: grafana
+            servicePort: 80
+
+  # - host: ops.sudojoss.com
+  #   tcp:
+  #     port: 3306
+  #     backend:
+  #       serviceName: mysql
+  #       servicePort: 3306
+
+  - host: test.sudojoss.com
+    http:
+      paths:
+        - backend:
+            serviceName: kubernetes-dashboard
+            servicePort: 443
+
+  tls: 
+  - secretName: sudojoss-tls
+    hosts:
+    - sudojoss.com
+    - www.sudojoss.com
+    - cloud.sudojoss.com
+    - blog.sudojoss.com
+    - prometheus.sudojoss.com
+    - grafana.sudojoss.com
+    - test.sudojoss.com

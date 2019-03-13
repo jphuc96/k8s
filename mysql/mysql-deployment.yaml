@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: mysql
+  name: mysql
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - args:
+        - --default-authentication-plugin=mysql_native_password
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: mysql_rootpasswd
+        image: mysql:5.7
+        name: mysql
+        ports:
+        - containerPort: 3306
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-pvc-data
+        # - mountPath: /etc/mysql/mysql.conf.d/mysqld.cnf
+        #   name: db-claim1
+      restartPolicy: Always
+      volumes:
+      - name: mysql-pvc-data
+        persistentVolumeClaim:
+          claimName: mysql-pvc-data
+      # - name: db-claim1
+      #   persistentVolumeClaim:
+      #     claimName: db-claim1
+status: {}

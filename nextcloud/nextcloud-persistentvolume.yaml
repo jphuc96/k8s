@@ -1,0 +1,14 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: nextcloud-config
+  labels:
+    type: local
+spec:
+  storageClassName: nextcloud-config
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/opt/k8s/nextcloud/config"

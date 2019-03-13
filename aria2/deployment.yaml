@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: aria2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: aria2
+    spec:
+      containers:
+      - name: aria2
+        image: xujinkai/aria2-with-webui
+        env:
+        - name: SECRET
+          value: hoangphuc
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        ports:
+        - containerPort: 6800
+        - containerPort: 80
+        volumeMounts:
+        - name: conf
+          mountPath: /conf
+        - name: data
+          mountPath: /data    
+        resources: {}
+      restartPolicy: Always
+      volumes:
+      - name: conf
+        persistentVolumeClaim:
+          claimName: aria2-conf
+      - name: data
+        persistentVolumeClaim:
+          claimName: aria2-data
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: aria2
+spec:
+  selector:
+    app: aria2
+  ports:
+  - name: 'rpc'
+    port: 6800
+    targetPort: 6800
+  - name: 'web'
+    port: 80
+    targetPort: 80

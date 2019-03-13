@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: sudojoss
+  # namespace: monitoring
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sudojoss
+    spec:
+      containers:
+        - name: sudojoss
+          image: jphuc96/sudojoss-landing-page:latest
+          imagePullPolicy: Never
+          # args:
+          ports:
+            - containerPort: 8081
+          volumeMounts:
+            - name: sudojoss
+              mountPath: /app
+
+          resources: {}
+      volumes:
+        - name: sudojoss
+          persistentVolumeClaim:
+            claimName: sudojoss
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: sudojoss
+spec:
+  selector:
+    app: sudojoss
+  ports:
+  - name: '8081'
+    port: 8081
+    targetPort: 8081

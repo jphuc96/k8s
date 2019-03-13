@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: prometheus
+  # annotations:
+  #   ingress.appscode.com/auth-type: basic
+  #   ingress.appscode.com/auth-realm: My Prometheus
+  #   ingress.appscode.com/auth-secret: prometheus-secret
+spec:
+  selector:
+    app: prometheus
+  ports:
+  - name: '9090'
+    port: 9090
+    targetPort: 9090

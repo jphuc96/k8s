@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    app: aria2
+  name: aria2-conf
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 50Mi
+  hostPath:
+    path: /opt/k8s/aria2/
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: aria2-conf
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    app: aria2
+  name: aria2-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 100Gi
+  hostPath:
+    path: /home/jphuc96/Download
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: aria2-data
+status: {}
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: aria2
+  name: aria2-conf
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Mi
+  storageClassName: aria2-conf
+  volumeMode: Filesystem
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: aria2
+  name: aria2-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: aria2-data
+  volumeMode: Filesystem
+status: {}
