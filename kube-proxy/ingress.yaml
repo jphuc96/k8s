@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: external-kube-proxy
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: k8s.sudojoss.com
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: external-kube-proxy
+            servicePort: 6443
+  tls: 
+  - secretName: sudojoss-tls
+    hosts:
+    - k8s.sudojoss.com

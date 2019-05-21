@@ -16,10 +16,6 @@ spec:
           backend:
             serviceName: sudojoss
             servicePort: 8081
-        - path: /aria2/?(.*)
-          backend:
-            serviceName: aria2
-            servicePort: 80
   tls: 
   - secretName: sudojoss-tls
     hosts:

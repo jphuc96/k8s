@@ -1,0 +1,43 @@
+kind: Service
+apiVersion: v1
+metadata:
+ name: external-odroid-22
+spec:
+ type: NodePort
+ ports:
+ - port: 22
+   targetPort: 22
+   nodePort: 30022
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+ name: external-odroid-22
+subsets:
+ - addresses:
+     - ip: 10.8.0.6
+   ports:
+     - port: 22
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+ name: external-odroid-1880
+spec:
+ type: NodePort
+ ports:
+ - port: 1880
+   targetPort: 1880
+   nodePort: 31880
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+ name: external-odroid-1880
+subsets:
+ - addresses:
+     - ip: 10.8.0.6
+   ports:
+     - port: 1880
+
