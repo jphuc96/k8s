@@ -4,9 +4,6 @@ metadata:
   name: sudojoss
   annotations:
     kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "true"
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
   - host: www.sudojoss.com
@@ -15,9 +12,8 @@ spec:
         - path: /
           backend:
             serviceName: sudojoss
-            servicePort: 8081
+            servicePort: 80
   tls: 
   - secretName: sudojoss-tls
     hosts:
-    - sudojoss.com
     - www.sudojoss.com

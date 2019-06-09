@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jupyter-notebook
+  labels:
+    app: jupyter-notebook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jupyter-notebook
+  template:
+    metadata:
+      labels:
+        app: jupyter-notebook
+    spec:
+      containers:
+      - name: jupyter-notebook
+        image: jupyter/pyspark-notebook:latest
+        command: ["start-notebook.sh"]
+        args: ["--NotebookApp.token='luciluci3049'"]
+        ports:
+        - containerPort: 8888
+        env:
+          - name: GRANT_SUDO
+            value: "yes"
+          # - name: USE_HTTPS
+            # value: "yes"
+        #   - name: CHOWN_HOME
+        #     value: "yes"
+        #   - name: CHOWN_HOME_OPTS
+        #     value: "-R"
+          # - name: GEN_CERT
+            # value: "yes"
+          # - name: JUPYTER_ENABLE_LAB
+            # value: "yes" 
+        
+        resources: {}
+        volumeMounts:
+        - mountPath: /home/jovyan
+          name: work
+      restartPolicy: Always
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 100
+      volumes:
+      - name: work 
+        persistentVolumeClaim:
+          claimName: jupyter-notebook 
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: jupyter-notebook
+spec:
+  selector:
+    app: jupyter-notebook
+  ports:
+  - name: '8888'
+    port: 8888
+    targetPort: 8888

@@ -2,6 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: sudojoss
+  labels:
+    app: sudojoss
 spec:
   replicas: 1
   template:
@@ -12,10 +14,8 @@ spec:
       containers:
         - name: sudojoss
           image: jphuc96/sudojoss-landing-page:latest
-#          imagePullPolicy: Never
-          # args:
           ports:
-            - containerPort: 8081
+            - containerPort: 80
           resources: {}
 ---
 kind: Service
@@ -26,6 +26,6 @@ spec:
   selector:
     app: sudojoss
   ports:
-  - name: '8081'
-    port: 8081
-    targetPort: 8081
+  - name: '80'
+    port: 80
+    targetPort: 80

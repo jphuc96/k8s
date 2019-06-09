@@ -1,0 +1,39 @@
+kind: Service
+apiVersion: v1
+metadata:
+ name: external-pgweb-gcp-compute
+spec:
+ type: ClusterIP
+ ports:
+ - port: 80
+   targetPort: 80
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+ name: external-pgweb-gcp-compute
+subsets:
+ - addresses:
+     - ip: 34.83.170.223
+   ports:
+     - port: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: external-pgweb-gcp-compute
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: pgweb.sudojoss.com
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: external-pgweb-gcp-compute
+            servicePort: 80
+  tls: 
+  - secretName: sudojoss-tls
+    hosts:
+    - pgweb.sudojoss.com

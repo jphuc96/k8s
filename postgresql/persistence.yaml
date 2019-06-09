@@ -1,0 +1,44 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgresql-0
+  labels:
+    type: local
+spec:
+  storageClassName: postgresql
+  capacity:
+    storage: 64Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/opt/k8s/postgresql"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgresql-1
+  labels:
+    type: local
+spec:
+  storageClassName: postgresql
+  capacity:
+    storage: 64Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/opt/k8s/postgresql"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgresql-2
+  labels:
+    type: local
+spec:
+  storageClassName: postgresql
+  capacity:
+    storage: 64Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/opt/k8s/postgresql"

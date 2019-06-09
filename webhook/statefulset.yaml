@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   creationTimestamp: null
@@ -6,8 +6,11 @@ metadata:
     app: webhook
   name: webhook
 spec:
+  serviceName: "webhook"
+  selector:
+    matchLabels:
+      app: webhook
   replicas: 2
-  strategy: {}
   template:
     metadata:
       creationTimestamp: null
@@ -49,9 +52,8 @@ spec:
         - containerPort: 80
         resources: {}
       restartPolicy: Always
-status: {}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   creationTimestamp: null
@@ -59,8 +61,11 @@ metadata:
     app: laravel-echo-server
   name: laravel-echo-server
 spec:
+  serviceName: "laravel-echo-server"
+  selector:
+    matchLabels:
+      app: laravel-echo-server
   replicas: 1
-  strategy: {}
   template:
     metadata:
       creationTimestamp: null
@@ -95,4 +100,3 @@ spec:
         - containerPort: 6001
         resources: {}
       restartPolicy: Always
-status: {}
