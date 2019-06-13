@@ -1,0 +1,97 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata: 
+  name: koding
+  labels:
+    app: koding
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: koding
+    spec: 
+      containers:
+        - name: koding-be
+          image: koding/koding
+          args: 
+            - --version
+            - master
+            - --hostname
+            - koding.sudojoss.com
+            - --host
+            - koding.sudojoss.com
+          env: 
+            - name: KODINGENV
+              value: default
+            - name: KONFIG_KLOUD_MONGOURL
+              value: localhost:27017/koding
+            - name: KONFIG_KONTROL_MONGOURL
+              value: localhost:27017/koding
+            - name: KONFIG_KONTROL_POSTGRES_HOST
+              value: localhost
+            - name: KONFIG_MONGO
+              value: localhost:27017/koding
+            - name: KONFIG_MONITORINGREDIS_HOST
+              value: localhost
+            - name: KONFIG_MONITORINGREDIS_PORT
+              value: "6379"
+            - name: KONFIG_MQ_APIADDRESS
+              value: localhost
+            - name: KONFIG_MQ_HOST
+              value: localhost
+            - name: KONFIG_POSTGRES_HOST
+              value: localhost
+            - name: KONFIG_REDIS_HOST
+              value: localhost
+            - name: KONFIG_REDIS_PORT
+              value: "6379"
+            - name: KONFIG_SOCIALAPI_MONGO
+              value: localhost:27017/koding
+            - name: KONFIG_SOCIALAPI_MQ_APIADDRESS
+              value: localhost
+            - name: KONFIG_SOCIALAPI_MQ_HOST
+              value: localhost
+            - name: KONFIG_SOCIALAPI_POSTGRES_HOST
+              value: localhost
+            - name: KONFIG_SOCIALAPI_REDIS_URL
+              value: localhost:6379
+            - name: KONFIG_VMWATCHER_MONGO
+              value: localhost:27017/koding
+            - name: KONFIG_VMWATCHER_REDIS
+              value: localhost:6379
+          ports:
+            - containerPort: 8090
+        - name: mongo
+          args:
+          - --noprealloc
+          - --nojournal
+          - --smallfiles
+          image: mongo:2.4
+        - name: postgres
+          image: koding/postgres:20160824
+          # volumeMounts:
+          # - mountPath: /var/lib/postgresql
+          #   name: postgres
+        - name: rabbitmq
+          image: rabbitmq:3-management
+        - name: redis
+          image: redis
+      # volumes:
+      # - name: postgres
+      #   persistentVolumeClaim:
+      #     claimName: koding-postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: koding
+  labels:
+    app: koding
+spec:
+  ports:
+  - name: "8090"
+    port: 8090
+    targetPort: 8090
+  selector:
+    app: koding

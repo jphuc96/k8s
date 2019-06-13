@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    app: syncthing
+  name: syncthing-data
+  namespace: syncthing
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 32Gi 
+  hostPath:
+    path: /opt/k8s/syncthing/data
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: syncthing-data
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    app: syncthing
+  name: syncthing-config
+  namespace: syncthing
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 100Mi 
+  hostPath:
+    path: /opt/k8s/syncthing/config
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: syncthing-config
+status: {}
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: syncthing
+  name: syncthing-data
+  namespace: syncthing
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 32Gi
+  storageClassName: syncthing-data
+  volumeMode: Filesystem
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: syncthing
+  name: syncthing-config
+  namespace: syncthing
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+  storageClassName: syncthing-config
+  volumeMode: Filesystem
+status: {}

@@ -1,0 +1,70 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: syncthing
+  namespace: syncthing
+  labels:
+    app: syncthing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: syncthing
+  template:
+    metadata:
+      labels:
+        app: syncthing
+    spec:
+      containers:
+      - name: syncthing
+        image: linuxserver/syncthing
+        ports:
+        - containerPort: 8384
+        - containerPort: 22000
+        - containerPort: 21027
+          protocol: UDP
+        env:
+          - name: "PUID"
+            value: "1000"
+          - name: "PGID"
+            value: "1000"
+          - name: "TZ"
+            value: "Asia/Ho_Chi_Minh"
+          - name: "UMASK_SET"
+            value: "022"
+        resources: {}
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        - mountPath: /data
+          name: data
+      restartPolicy: Always
+      volumes:
+      - name: config 
+        persistentVolumeClaim:
+          claimName: syncthing-config
+      - name: data
+        persistentVolumeClaim:
+          claimName: syncthing-data
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: syncthing
+  namespace: syncthing
+spec:
+  selector:
+    app: syncthing
+  ports:
+  - name: '8384'
+    port: 8384
+    targetPort: 8384
+    protocol: TCP
+  - name: '22000'
+    port: 22000
+    targetPort: 22000
+    protocol: TCP
+  - name: '21027'
+    port: 21027
+    targetPort: 21027
+    protocol: UDP

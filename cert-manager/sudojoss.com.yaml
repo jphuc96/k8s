@@ -1,0 +1,16 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+ name: sudojoss.com
+ # namespace: kube-system
+spec:
+ secretName: sudojoss-tls
+ issuerRef:
+   name: letsencrypt-staging 
+ commonName: '*.sudojoss.com'
+ acme:
+   config:
+     - dns01:
+         provider: cf-dns
+       domains:
+         - '*.sudojoss.com'

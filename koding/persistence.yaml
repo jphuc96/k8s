@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: koding-postgres
+  labels:
+    type: local
+spec:
+  storageClassName: koding-postgres
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/opt/k8s/koding/postgres"
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: koding-rabbitmq
+#   labels:
+#     type: local
+# spec:
+#   storageClassName: koding-rabbitmq
+#   capacity:
+#     storage: 5Gi
+#   accessModes:
+#     - ReadWriteOnce
+#   hostPath:
+#     path: "/opt/k8s/koding/rabbitmq"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: koding-postgres
+  name: koding-postgres
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: koding-postgres
+  volumeMode: Filesystem
+  volumeName: koding-postgres
+status: {}

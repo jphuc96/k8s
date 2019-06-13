@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: koding
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($host = 'voconic.koding.sudojoss.com' ) {
+        rewrite ^ https://koding.sudojoss.com$request_uri permanent;
+      }
+spec:
+  rules:
+  - host: koding.sudojoss.com
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: koding
+            servicePort: 8090
+  - host: voconic.koding.sudojoss.com
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: koding
+            servicePort: 8090
+  tls: 
+  - secretName: sudojoss-tls 
+    hosts:
+    - koding.sudojoss.com
+    - voconic.koding.sudojoss.com
