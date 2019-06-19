@@ -4,14 +4,14 @@ metadata:
   labels:
     app: syncthing
   name: syncthing-data
-  namespace: syncthing
+  namespace: default
 spec:
   accessModes:
   - ReadWriteOnce
   capacity:
-    storage: 32Gi 
+    storage: 100Gi 
   hostPath:
-    path: /opt/k8s/syncthing/data
+    path: /home/jphuc96
   persistentVolumeReclaimPolicy: Retain
   storageClassName: syncthing-data
 status: {}
@@ -22,7 +22,7 @@ metadata:
   labels:
     app: syncthing
   name: syncthing-config
-  namespace: syncthing
+  namespace: default
 spec:
   accessModes:
   - ReadWriteOnce
@@ -41,13 +41,13 @@ metadata:
   labels:
     app: syncthing
   name: syncthing-data
-  namespace: syncthing
+  namespace: default
 spec:
   accessModes:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 32Gi
+      storage: 100Gi
   storageClassName: syncthing-data
   volumeMode: Filesystem
 status: {}
@@ -58,7 +58,7 @@ metadata:
   labels:
     app: syncthing
   name: syncthing-config
-  namespace: syncthing
+  namespace: default
 spec:
   accessModes:
   - ReadWriteOnce

@@ -38,7 +38,6 @@ metadata:
   labels:
     app: nextcloud
   name: nextcloud-local-home-claim
-  selfLink: /api/v1/namespaces/default/persistentvolumeclaims/nextcloud-local-home-claim
 spec:
   accessModes:
   - ReadWriteOnce
@@ -48,23 +47,6 @@ spec:
   storageClassName: nextcloud-local-home
   volumeMode: Filesystem
   volumeName: nextcloud-local-home
-status: {}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    app: nextcloud
-  name: nextcloud-local-opt-claim
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Gi
-  storageClassName: nextcloud-local-opt
-  volumeMode: Filesystem
-  volumeName: nextcloud-local-opt
 status: {}
 ---
 apiVersion: v1

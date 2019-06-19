@@ -1,0 +1,22 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: syncthing
+  namespace: default
+spec:
+  selector:
+    app: syncthing
+  type: NodePort
+  ports:
+  - name: '8384'
+    port: 8384
+    targetPort: 8384
+    protocol: TCP
+  - name: '22000'
+    port: 22000
+    targetPort: 22000
+    protocol: TCP
+  - name: '21027'
+    port: 21027
+    targetPort: 21027
+    protocol: UDP

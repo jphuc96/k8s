@@ -6,18 +6,6 @@ metadata:
     kubernetes.io/ingress.class: nginx
 spec:
   rules:
-  - host: www.sudojoss.com
-    http:
-      paths:
-        - path: /
-          backend:
-            serviceName: sudojoss
-            servicePort: 8081
-        - path: /aria2
-          backend:
-            serviceName: aria2
-            servicePort: 80
-
   - host: blog.sudojoss.com
     http:
       paths:

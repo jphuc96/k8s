@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: grav
+  labels:
+    app: grav
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: grav
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: grav
+          image: jphuc96/grav:latest
+          ports:
+            - containerPort: 80
+          resources: {}
+          volumeMounts:
+          - mountPath: /var/www/html
+            name: data
+      volumes:
+      - name: data 
+        persistentVolumeClaim:
+          claimName: grav

@@ -1,0 +1,31 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: grav
+  labels:
+    type: local
+spec:
+  storageClassName: grav
+  capacity:
+    storage: 32Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/opt/k8s/grav"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: grav
+  name: grav
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 32Gi
+  storageClassName: grav
+  volumeMode: Filesystem
+  volumeName: grav
+status: {}

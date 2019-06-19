@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: grav
+spec:
+  selector:
+    app: grav
+  ports:
+  - name: '80'
+    port: 80
+    targetPort: 80

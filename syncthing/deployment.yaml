@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: syncthing
-  namespace: syncthing
+  namespace: default
   labels:
     app: syncthing
 spec:
@@ -36,7 +36,7 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: config
-        - mountPath: /data
+        - mountPath: /home/jphuc96
           name: data
       restartPolicy: Always
       volumes:
@@ -46,25 +46,3 @@ spec:
       - name: data
         persistentVolumeClaim:
           claimName: syncthing-data
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: syncthing
-  namespace: syncthing
-spec:
-  selector:
-    app: syncthing
-  ports:
-  - name: '8384'
-    port: 8384
-    targetPort: 8384
-    protocol: TCP
-  - name: '22000'
-    port: 22000
-    targetPort: 22000
-    protocol: TCP
-  - name: '21027'
-    port: 21027
-    targetPort: 21027
-    protocol: UDP

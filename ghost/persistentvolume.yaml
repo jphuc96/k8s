@@ -1,0 +1,29 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: ghost-content
+  labels:
+    app: ghost
+spec:
+  storageClassName: ghost-content
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/opt/k8s/ghost/content"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: ghost-db
+  labels:
+    app: ghost-db
+spec:
+  storageClassName: ghost-db
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/opt/k8s/ghost/mysql"
