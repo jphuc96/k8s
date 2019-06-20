@@ -112,7 +112,7 @@ controller:
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {
-    arch: amd64
+    kubernetes.io/arch: amd64
   } 
 
   ## Liveness and readiness probe values

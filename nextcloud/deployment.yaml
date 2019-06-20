@@ -13,6 +13,23 @@ spec:
       labels:
         app: nextcloud
     spec:
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: nextcloud-config-claim
+      - name: data
+        persistentVolumeClaim:
+          claimName: nextcloud-data-claim
+      - name: local-home
+        persistentVolumeClaim:
+          claimName: nextcloud-local-home-claim
+      - name: nfs-sd
+        nfs:
+          server: 192.168.0.7
+          path: /opt/nfs/sd
+      - name: nextcloud-db
+        persistentVolumeClaim:
+          claimName: nextcloud-db-claim
       containers:
       - name: nextcloud
         image: linuxserver/nextcloud
@@ -39,6 +56,8 @@ spec:
           name: data
         - mountPath: /ext-data/home/jphuc96
           name: local-home
+        - mountPath: /ext-data/nfs/sd
+          name: nfs-sd
       - name: nextcloud-db
         image: mariadb
         args:
@@ -60,17 +79,4 @@ spec:
         - mountPath: /var/lib/mysql
           name: nextcloud-db
       restartPolicy: Always
-      volumes:
-      - name: config
-        persistentVolumeClaim:
-          claimName: nextcloud-config-claim
-      - name: data
-        persistentVolumeClaim:
-          claimName: nextcloud-data-claim
-      - name: local-home
-        persistentVolumeClaim:
-          claimName: nextcloud-local-home-claim
-      - name: nextcloud-db
-        persistentVolumeClaim:
-          claimName: nextcloud-db-claim
 status: {}

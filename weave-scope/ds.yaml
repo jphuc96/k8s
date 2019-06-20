@@ -30,6 +30,7 @@ spec:
             - '--probe.kubernetes.role=host'
             - '--probe.docker.bridge=docker0'
             - '--probe.docker=true'
+            - '--weave=false'
             - 'weave-scope-app.weave.svc.cluster.local.:80'
           image: weaveworks/scope:1.11.2
           imagePullPolicy: IfNotPresent
@@ -49,6 +50,8 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
       hostPID: true
+      nodeSelector:
+        kubernetes.io/arch: amd64
       tolerations:
         - effect: NoSchedule
           operator: Exists
