@@ -29,7 +29,7 @@ spec:
             - '--no-probe'
             - '--weave=false'
           env: []
-          image: weaveworks/scope:1.11.2
+          image: weaveworks/scope:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 4040
