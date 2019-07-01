@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: weave-scope
@@ -18,7 +18,7 @@ spec:
       paths:
         - path: /
           backend:
-            serviceName: weave-scope-weave-scope
+            serviceName: weave-scope-app
             servicePort: 80
   tls: 
   - secretName: sudojoss-tls

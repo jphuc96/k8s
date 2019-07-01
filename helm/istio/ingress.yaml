@@ -19,6 +19,10 @@ spec:
           backend:
             serviceName: kiali
             servicePort: 20001
+        - path: /prometheus
+          backend:
+            serviceName: prometheus
+            servicePort: 9090
         - path: /grafana
           backend:
             serviceName: grafana

@@ -62,7 +62,7 @@ nodeagent:
 # addon grafana configuration
 #
 grafana:
-  enabled: true
+  enabled: false
 
 #
 # addon prometheus configuration

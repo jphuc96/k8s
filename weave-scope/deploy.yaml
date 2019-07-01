@@ -29,8 +29,8 @@ spec:
             - '--no-probe'
             - '--weave=false'
           env: []
-          image: weaveworks/scope:latest
-          imagePullPolicy: IfNotPresent
+          image: weaveworks/scope:1.11.2
+          imagePullPolicy: Always
           ports:
             - containerPort: 4040
               protocol: TCP
