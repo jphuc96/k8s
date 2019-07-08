@@ -1,0 +1,15 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres
+spec:
+  storageClassName: postgres
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/opt/k8s/postgres"
+  # nfs:
+  #   path: /opt/nfs/sd/k8s/postgres
+  #   server: 192.168.0.7

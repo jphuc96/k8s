@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: logdna-agent-key
+type: Opaque
+data:
+  logdna-agent-key: NzM0ODhiOTJiZjkzMjgyYWE1NThkNDQ4MDZiZDFiM2Q=
