@@ -1,0 +1,191 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: heptio-sonobuoy
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    component: sonobuoy
+  name: sonobuoy-serviceaccount
+  namespace: heptio-sonobuoy
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    component: sonobuoy
+  name: sonobuoy-serviceaccount-heptio-sonobuoy
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: sonobuoy-serviceaccount
+subjects:
+- kind: ServiceAccount
+  name: sonobuoy-serviceaccount
+  namespace: heptio-sonobuoy
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    component: sonobuoy
+  name: sonobuoy-serviceaccount
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - '*'
+---
+apiVersion: v1
+data:
+  config.json: |
+    {
+      "Description": "sonobuoy run for scanner.heptio.com",
+      "Version": "v0.13.0",
+      "ResultsDir": "/tmp/sonobuoy",
+      "Resources": [
+        "Nodes",
+        "ServerVersion"
+      ],
+      "Filters": {
+        "Namespaces": ".*",
+        "LabelSelector": ""
+      },
+      "Server": {
+        "bindaddress":"0.0.0.0",
+        "bindport":8080,
+        "advertiseaddress":"",
+        "timeoutseconds":8000
+      },
+      "Plugins": [
+        {
+          "name":"e2e"
+        }
+      ],
+      "WorkerImage":"gcr.io/heptio-images/sonobuoy:v0.13",
+      "ImagePullPolicy":"Always"
+    }
+kind: ConfigMap
+metadata:
+  labels:
+    component: sonobuoy
+  name: sonobuoy-config-cm
+  namespace: heptio-sonobuoy
+---
+apiVersion: v1
+data:
+  e2e.yaml: |
+    sonobuoy-config:
+      driver: Job
+      plugin-name: e2e
+      result-type: e2e
+    spec:
+      env:
+      - name: E2E_FOCUS
+        value: '\[Conformance\]'
+      command: ["/run_e2e.sh"]
+      image: gcr.io/heptio-images/kube-conformance:latest
+      imagePullPolicy: Always
+      name: e2e
+      volumeMounts:
+      - mountPath: /tmp/results
+        name: results
+        readOnly: false
+kind: ConfigMap
+metadata:
+  labels:
+    component: sonobuoy
+  name: sonobuoy-plugins-cm
+  namespace: heptio-sonobuoy
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    component: sonobuoy
+    run: sonobuoy-master
+    tier: analysis
+  name: sonobuoy
+  namespace: heptio-sonobuoy
+spec:
+  containers:
+  - env:
+    - name: SONOBUOY_ADVERTISE_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+    image: gcr.io/heptio-images/sonobuoy:v0.13
+    imagePullPolicy: Always
+    name: kube-sonobuoy
+    volumeMounts:
+    - mountPath: /etc/sonobuoy
+      name: sonobuoy-config-volume
+    - mountPath: /plugins.d
+      name: sonobuoy-plugins-volume
+    - mountPath: /tmp/sonobuoy
+      name: sonobuoy-output
+  - env:
+    - name: READ_RESULTS_DIR
+      value: /tmp/sonobuoy
+    - name: WRITE_RESULTS_DIR
+      value: /tmp/forwarder
+    - name: HEPTIO_TOKEN
+      value: "48369b18e4abc7365f0d8b7d86cc2f08"
+    - name: CLOUD_URL
+      value: https://scanner.heptio.com
+    image: gcr.io/heptio-images/scanner-forwarder:v0.0.4
+    imagePullPolicy: Always
+    name: forwarder
+    volumeMounts:
+    - mountPath: /tmp/sonobuoy
+      name: sonobuoy-output
+    - mountPath: /tmp/forwarder
+      name: forwarder-output
+  - env:
+    - name: NAMESPACE
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+    - name: READ_RESULTS_DIR
+      value: /tmp/forwarder
+    image: gcr.io/heptio-images/namespace-deleter:v0.0.1
+    imagePullPolicy: Always
+    name: cleanup
+    volumeMounts:
+    - mountPath: /tmp/forwarder
+      name: forwarder-output
+  restartPolicy: Never
+  serviceAccountName: sonobuoy-serviceaccount
+  volumes:
+  - configMap:
+      name: sonobuoy-config-cm
+    name: sonobuoy-config-volume
+  - configMap:
+      name: sonobuoy-plugins-cm
+    name: sonobuoy-plugins-volume
+  - emptyDir: {}
+    name: sonobuoy-output
+  - emptyDir: {}
+    name: forwarder-output
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    component: sonobuoy
+    run: sonobuoy-master
+  name: sonobuoy-master
+  namespace: heptio-sonobuoy
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: sonobuoy-master
+  type: ClusterIP

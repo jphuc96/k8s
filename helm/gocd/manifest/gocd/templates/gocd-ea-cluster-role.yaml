@@ -1,0 +1,31 @@
+---
+# Source: gocd/templates/gocd-ea-cluster-role.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: gocd
+  labels:
+    chart: "gocd-1.13.0"
+    app: "gocd"
+    heritage: "Tiller"
+    release: "gocd"
+rules:
+- apiGroups: [""]
+  resources:
+  - pods
+  - pods/log
+  verbs: ["*"]
+- apiGroups: [""]
+  resources:
+  - nodes
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources:
+  - events
+  verbs: ["list", "watch"]
+- apiGroups: [""]
+  resources:
+  - namespaces
+  verbs: ["get"]
+

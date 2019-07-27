@@ -1,0 +1,20 @@
+---
+# Source: gocd/templates/test-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gocd-tests
+  labels:
+    app: gocd
+    chart: "gocd-1.13.0"
+    release: "gocd"
+    heritage: "Tiller"
+data:
+  run.sh: |-
+    @test "Testing GoCD UI is accessible" {
+        curl --connect-timeout 10 --retry 12 --retry-delay 10 --retry-max-time 90 "http://gocd-server:8153/go/auth/login"
+    }
+
+    @test "Testing GoCD application is accessible through service" {
+      curl --retry 2 --retry-delay 10 --retry-max-time 90 http://gocd-server:8153/go
+    }

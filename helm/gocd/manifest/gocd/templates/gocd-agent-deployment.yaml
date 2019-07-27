@@ -1,0 +1,54 @@
+---
+# Source: gocd/templates/gocd-agent-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gocd-agent
+  labels:
+    app: gocd
+    chart:  "gocd-1.13.0"
+    release: "gocd"
+    heritage: "Tiller"
+    component: agent
+  annotations:
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: gocd
+      release: "gocd"
+      component: agent
+  template:
+    metadata:
+      labels:
+        app: gocd
+        release: "gocd"
+        component: agent
+      annotations:
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: gocd-agent
+          image: "gocd/gocd-agent-alpine-3.9:v19.5.0"
+          imagePullPolicy: IfNotPresent
+          resources:
+            {}
+            
+          env:
+            - name: GO_SERVER_URL
+              value: "https://gocd-server:8154/go"
+          livenessProbe:
+            httpGet:
+              path: /health/v1/isConnectedToServer
+              port: 8152
+            initialDelaySeconds: 60
+            failureThreshold: 60
+            periodSeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /health/v1/isConnectedToServer
+              port: 8152
+            initialDelaySeconds: 60
+          securityContext:
+            privileged: true
+      restartPolicy: Always

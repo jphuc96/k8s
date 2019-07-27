@@ -1,0 +1,16 @@
+---
+# Source: gocd/templates/gocd-server-pvc.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: gocd-server
+  namespace: gocd
+  labels:
+    app: gocd
+spec:
+  storageClassName: gocd
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "10Gi"

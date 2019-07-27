@@ -1,0 +1,20 @@
+---
+# Source: gocd/templates/gocd-ea-cluster-role-binding.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: gocd
+  labels:
+    chart: "gocd-1.13.0"
+    app: "gocd"
+    heritage: "Tiller"
+    release: "gocd"
+subjects:
+- kind: ServiceAccount
+  name: gocd
+  namespace: gocd
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: gocd

@@ -14,7 +14,7 @@ global:
 image:
   registry: docker.io
   repository: bitnami/postgresql
-  tag: 11.4.0-debian-9-r12
+  tag: 11.4.0-debian-9-r34
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -31,6 +31,14 @@ image:
   ## It turns BASH and NAMI debugging in minideb
   ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-bash-debugging
   debug: false
+
+## String to partially override postgresql.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override postgresql.fullname template
+##
+# fullnameOverride:
 
 ##
 ## Init containers parameters:
@@ -78,10 +86,10 @@ serviceAccount:
   # name:
 
 replication:
-  enabled: false
+  enabled: true
   user: repl_user
   password: repl_password
-  slaveReplicas: 1
+  slaveReplicas: 2
   ## Set synchronous commit mode: on, off, remote_apply, remote_write and local
   ## ref: https://www.postgresql.org/docs/9.6/runtime-config-wal.html#GUC-WAL-LEVEL
   synchronousCommit: "off"
@@ -217,7 +225,7 @@ persistence:
   ## If defined, PVC must be created manually before volume will be bound
   ## The value is evaluated as a template, so, for example, the name can depend on .Release or .Chart
   ##
-  existingClaim: postgres
+  # existingClaim:
 
   ## The path the volume will be mounted at, useful when using different
   ## PostgreSQL images.
@@ -232,7 +240,7 @@ persistence:
   storageClass: "postgres"
   accessModes:
     - ReadWriteOnce
-  size: 10Gi
+  size: 8Gi
   annotations: {}
 
 ## updateStrategy for PostgreSQL StatefulSet and its slaves StatefulSets
@@ -337,8 +345,8 @@ metrics:
     # scrapeTimeout: 10s
   image:
     registry: docker.io
-    repository: wrouesnel/postgres_exporter
-    tag: v0.4.7
+    repository: bitnami/postgres-exporter
+    tag: 0.5.1-debian-9-r0
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.

@@ -21,9 +21,9 @@ spec:
         args: ["--NotebookApp.token='luciluci3049'"]
         ports:
         - containerPort: 8888
-        env:
-          - name: GRANT_SUDO
-            value: "yes"
+        # env:
+        #   - name: GRANT_SUDO
+        #     value: "yes"
           # - name: USE_HTTPS
             # value: "yes"
         #   - name: CHOWN_HOME
@@ -34,28 +34,21 @@ spec:
             # value: "yes"
           # - name: JUPYTER_ENABLE_LAB
             # value: "yes" 
-        
-        resources: {}
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
         volumeMounts:
         - mountPath: /home/jovyan
-          name: work
+          name: home
       restartPolicy: Always
       securityContext:
         runAsUser: 0
         runAsGroup: 100
       volumes:
-      - name: work 
+      - name: home
         persistentVolumeClaim:
-          claimName: jupyter-notebook 
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: jupyter-notebook
-spec:
-  selector:
-    app: jupyter-notebook
-  ports:
-  - name: '8888'
-    port: 8888
-    targetPort: 8888
+          claimName: jupyter-notebook
