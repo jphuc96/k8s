@@ -15,9 +15,16 @@ spec:
       containers:
         - name: grav
           image: jphuc96/grav:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
-          resources: {}
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1024Mi"
           volumeMounts:
           - mountPath: /var/www/html
             name: data

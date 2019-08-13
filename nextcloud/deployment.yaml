@@ -23,16 +23,13 @@ spec:
       - name: local-home
         persistentVolumeClaim:
           claimName: nextcloud-local-home-claim
-      - name: nfs-sd
-        nfs:
-          server: 192.168.0.7
-          path: /opt/nfs/sd
       - name: nextcloud-db
         persistentVolumeClaim:
           claimName: nextcloud-db-claim
       containers:
       - name: nextcloud
-        image: linuxserver/nextcloud
+        image: linuxserver/nextcloud:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 443
         env:
@@ -48,7 +45,13 @@ spec:
           value: "1000"
         - name: PUID
           value: "1000"
-        resources: {}
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "500m"
+            memory: "1024Mi"
         volumeMounts:
         - mountPath: /config
           name: config
@@ -56,10 +59,9 @@ spec:
           name: data
         - mountPath: /ext-data/home/jphuc96
           name: local-home
-        - mountPath: /ext-data/nfs/sd
-          name: nfs-sd
       - name: nextcloud-db
-        image: mariadb
+        image: mariadb:latest
+        imagePullPolicy: IfNotPresent
         args:
         - --transaction-isolation=READ-COMMITTED
         - --binlog-format=ROW
@@ -74,9 +76,14 @@ spec:
           value: mysql_rootpasswd
         - name: MYSQL_USER
           value: nextcloud
-        resources: {}
+        resources:
+          requests:
+            cpu: "125m"
+            memory: "256Mi"
+          limits:
+            cpu: "250m"
+            memory: "512Mi"
         volumeMounts:
         - mountPath: /var/lib/mysql
           name: nextcloud-db
       restartPolicy: Always
-status: {}

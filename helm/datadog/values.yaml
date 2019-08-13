@@ -41,25 +41,25 @@ datadog:
   ## Set this to your Datadog API key before the Agent runs.
   ## ref: https://app.datadoghq.com/account/settings#agent/kubernetes
   #
-  apiKey: 
+  # apiKey: 
 
   ## @param apiKeyExistingSecret - string - optional
   ## Use existing Secret which stores API key instead of creating a new one.
   ## If set, this parameter takes precedence over "apiKey".
   #
-  # apiKeyExistingSecret: <DATADOG_API_KEY_SECRET>
+  apiKeyExistingSecret: datadog-secret
 
   ## @param appKey - string - optional
   ## If you are using clusterAgent.metricsProvider.enabled = true, you must set
   ## a Datadog application key for read access to your metrics.
   #
-  appKey: 
+  # appKey: 
 
   ## @param appKeyExistingSecret - string - optional
   ## Use existing Secret which stores APP key instead of creating a new one
   ## If set, this parameter takes precedence over "appKey".
   #
-  # appKeyExistingSecret: <DATADOG_APP_KEY_SECRET>
+  appKeyExistingSecret: datadog-secret
 
   ## @param securityContext - object - optional
   ## You can modify the security context used to run the containers by
@@ -84,14 +84,14 @@ datadog:
   ## The site of the Datadog intake to send Agent data to.
   ## Set to 'datadoghq.eu' to send data to the EU site.
   #
-  site: datadoghq.com
+  # site: datadoghq.com
 
   ## @param dd_url - string - optional - default: 'https://app.datadoghq.com'
   ## The host of the Datadog intake server to send Agent data to, only set this option
   ## if you need the Agent to send data to a custom URL.
   ## Overrides the site setting defined in "site".
   #
-  dd_url: https://app.datadoghq.com
+  # dd_url: https://app.datadoghq.com
 
   ## @param logLevel - string - required
   ## Set logging verbosity, valid log levels are:
@@ -144,7 +144,7 @@ datadog:
   ## Enable this to make each node accept non-local statsd traffic.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
   #
-  nonLocalTraffic: true
+  # nonLocalTraffic: false
 
   ## @param collectEvents - boolean - optional - default: false
   ## Enables this to start event collection from the kubernetes API
@@ -186,14 +186,14 @@ datadog:
   ## Enable this to enable APM and tracing, on port 8126
   ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
   #
-  apmEnabled: true
+  apmEnabled: false
 
   ## @param processAgentEnabled - boolean - optional - default: false
   ## Enable this to activate live process monitoring.
   ## Note: /etc/passwd is automatically mounted to allow username resolution.
   ## ref: https://docs.datadoghq.com/graphing/infrastructure/process/#kubernetes-daemonset
   #
-  processAgentEnabled: true
+  # processAgentEnabled: true
 
   ## @param env - list of object - optional
   ## The dd-agent supports many environment variables
@@ -225,28 +225,28 @@ datadog:
   ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#optional-volumes
   ## ref: https://docs.datadoghq.com/agent/autodiscovery/
   #
-  # confd:
-  #   redisdb.yaml: |-
-  #     ad_identifiers:
-  #         - redis
-  #         - bitnami/redis
-  #     init_config:
-  #     instances:
-  #       - host: "%%host%%"
-  #         port: "%%port%%"
-  #   kubernetes_state.yaml: |-
-  #     ad_identifiers:
-  #       - kube-state-metrics
-  #     init_config:
-  #     instances:
-  #       - kube_state_url: http://%%host%%:8080/metrics
-  #   jmx.yaml: |-
-  #     ad_identifiers:
-  #       - openjdk
-  #     instance_config:
-  #     instances:
-  #       - host: "%%host%%"
-  #         port: "%%port_0%%"
+  confd:
+    # redisdb.yaml: |-
+    #   ad_identifiers:
+    #       - redis
+    #       - bitnami/redis
+    #   init_config:
+    #   instances:
+    #     - host: "%%host%%"
+    #       port: "%%port%%"
+    kubernetes_state.yaml: |-
+      ad_identifiers:
+        - kube-state-metrics
+      init_config:
+      instances:
+        - kube_state_url: http://%%host%%:8080/metrics
+    jmx.yaml: |-
+      ad_identifiers:
+        - openjdk
+      instance_config:
+      instances:
+        - host: "%%host%%"
+          port: "%%port_0%%"
 
   ## @param checksd - list of key:value strings - optional
   ## Provide additional custom checks as python code
@@ -320,8 +320,8 @@ clusterAgent:
   ## @param metricsProvider - object - required
   ## Enable the metricsProvider to be able to scale based on metrics in Datadog
   #
-  # metricsProvider:
-  #   enabled: true
+  metricsProvider:
+    enabled: true
 
   ## @param clusterChecks - object - required
   ## Enable the Cluster Checks feature on both the cluster-agents and the daemonset
@@ -329,7 +329,7 @@ clusterAgent:
   ## Autodiscovery via Kube Service annotations is automatically enabled
   #
   clusterChecks:
-    enabled: false
+    enabled: true
 
   ## @param confd - list of objects - optional
   ## Provide additional cluster check configurations
@@ -393,7 +393,9 @@ rbac:
   #
   serviceAccountName: default
 
-tolerations: []
+tolerations:
+  - key: node-role.kubernetes.io/master
+    effect: NoSchedule
 
 kubeStateMetrics:
 
@@ -441,14 +443,16 @@ daemonset:
       ## Additionnal environment variables for the agent container.
       #
       env:
+        - name: DD_KUBELET_TLS_VERIFY
+          value: "false"
         - name: KUBERNETES_KUBELET_HOST
           valueFrom:
             fieldRef:
               fieldPath: status.hostIP
-        - name: DD_AGENT_HOST
-          valueFrom:
-            fieldRef:
-              fieldPath: status.hostIP
+      #   - name: DD_AGENT_HOST
+      #     valueFrom:
+      #       fieldRef:
+      #         fieldPath: status.hostIP
 
       ## @param logLevel - string - optional
       ## Set logging verbosity, valid log levels are:
@@ -551,7 +555,9 @@ daemonset:
   ## @param tolerations - array - optional
   ## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes >= 1.6)
   #
-  # tolerations: []
+  tolerations:
+  - key: node-role.kubernetes.io/master
+    effect: NoSchedule
 
   ## @param nodeSelector - object - optional
   ## Allow the DaemonSet to schedule on selected nodes
@@ -608,7 +614,9 @@ deployment:
   ## Tolerations for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   #
-  tolerations: []
+  tolerations:
+  - key: node-role.kubernetes.io/master
+    effect: NoSchedule
 
   ## @param dogstatsdNodePort - integer - optional
   ## If you're using a NodePort-type service and need a fixed port, set this parameter.
@@ -659,13 +667,13 @@ clusterchecksDeployment:
   ## @param resources - object -required
   ## Datadog clusterchecks-agent resource requests and limits.
   #
-  resources: {}
-#    requests:
-#      cpu: 200m
-#      memory: 500Mi
-#    limits:
-#      cpu: 200m
-#      memory: 500Mi
+  resources:
+    requests:
+      cpu: 200m
+      memory: 500Mi
+    limits:
+      cpu: 200m
+      memory: 500Mi
 
   ## @param affinity - object - optional
   ## Allow the ClusterChecks Deployment to schedule using affinity rules.
@@ -684,7 +692,9 @@ clusterchecksDeployment:
   ## Tolerations for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   #
-  tolerations: []
+  tolerations:
+  - key: node-role.kubernetes.io/master
+    effect: NoSchedule
 
   ## @param livenessProbe - object - optional
   ## Override the agent's liveness probe logic from the default:

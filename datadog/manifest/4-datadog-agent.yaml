@@ -1,21 +1,15 @@
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: datadog-agent
   namespace: datadog
 spec:
-  selector:
-    matchLabels:
-      app: datadog-agent
   template:
     metadata:
       labels:
         app: datadog-agent
       name: datadog-agent
     spec:
-      tolerations:
-      - key: node-role.kubernetes.io/master
-        effect: NoSchedule
       serviceAccountName: datadog-agent
       containers:
       - image: datadog/agent:latest
@@ -48,6 +42,8 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.hostIP
+          - name: DD_KUBELET_TLS_VERIFY
+            value: "false"
           - name: DD_APM_ENABLED
             value: "true"
         resources:
