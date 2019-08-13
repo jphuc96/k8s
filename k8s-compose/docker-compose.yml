@@ -1,0 +1,19 @@
+version: '3.5'
+services: 
+  master:
+    image: ubuntu:bionic
+    container_name: master
+    ports: 
+      - 80:80
+      - 443:443
+    networks: 
+      - k8s-compose
+  node-1:
+    image: ubuntu:bionic
+    container_name: node-1
+    networks:
+      - k8s-compose
+
+networks: 
+  k8s-compose:
+    driver: bridge

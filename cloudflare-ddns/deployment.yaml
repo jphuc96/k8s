@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflare-ddns
+spec:
+  selector:
+    matchLabels:
+      app: cloudflare-ddns
+  template:
+    metadata:
+      labels:
+        app: cloudflare-ddns
+    spec:
+      containers:
+      - name: cloudflare-ddns
+        image: joshuaavalon/cloudflare-ddns
+        env:
+          - name: EMAIL
+            valueFrom:
+              secretKeyRef:
+                name: sudojoss-cloudflare
+                key: email
+          - name: API
+            valueFrom:
+              secretKeyRef:
+                name: sudojoss-cloudflare
+                key: api
+          - name: ZONE
+            valueFrom:
+              secretKeyRef:
+                name: sudojoss-cloudflare
+                key: zone
+          - name: HOST
+            valueFrom:
+              secretKeyRef:
+                name: sudojoss-cloudflare
+                key: host
+          - name: TTL
+            valueFrom:
+              secretKeyRef:
+                name: sudojoss-cloudflare
+                key: ttl
+          - name: PROXY
+            valueFrom:
+              secretKeyRef:
+                name: sudojoss-cloudflare
+                key: proxy
+        resources:
+          limits:
+            memory: "16Mi"
+            cpu: "16m"
