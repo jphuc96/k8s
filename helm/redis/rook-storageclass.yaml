@@ -1,0 +1,18 @@
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: pool-redis
+  namespace: rook-ceph
+spec:
+  replicated:
+    size: 2
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: redis
+provisioner: ceph.rook.io/block
+parameters:
+  blockPool: pool-redis
+  clusterNamespace: rook-ceph
+  fstype: xfs

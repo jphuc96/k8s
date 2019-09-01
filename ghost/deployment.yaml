@@ -14,9 +14,14 @@ spec:
         app: ghost
     spec:
       containers:
-      - image: ghost:alpine
+      - image: ghost:latest
+        imagePullPolicy: Always
         name: ghost
-        resources: {}
+        resources:
+          requests:
+            memory: "512Mi"
+          limits:
+            memory: "1Gi"
         envFrom:
           - configMapRef:
               name: ghost-configmap 

@@ -1,0 +1,28 @@
+---
+# Source: fluent-bit/templates/tests/test-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-test
+  labels:
+    app: fluent-bit
+    chart: "fluent-bit-2.6.0"
+    heritage: "Tiller"
+    release: "fluent-bit"
+data:
+  run.sh: |-
+    @test "Test fluentd" {
+      fluentd -c /tests/fluentd.conf --dry-run
+    }
+
+  fluentd.conf: |-
+    <source>
+      @type forward
+      bind 0.0.0.0
+      port 24284
+      shared_key 
+    </source>
+
+    <match **>
+      @type stdout
+    </match>

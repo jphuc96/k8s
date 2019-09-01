@@ -1,0 +1,4 @@
+kube.var.log.containers.nginx-ingress-controller-9h4q2_kube-system_nginx-ingress-controller-b80155de6c709bc5509e38113fdbdc39d69f27815326bab8ffe678342fdf34d5.log
+
+kube.var.log.containers.fluent-bit-qvssx_logging_fluent-bit-1cd943461a69de39bbead2573623af447e896dda4f0350426dc445a785b69aab.log
+
